@@ -1,0 +1,6 @@
+{
+  "name": "SmartRunner",
+  "description": "스마트러너(SmartRunner) - 실시간 날씨 기반 권장 페이스 산출, 오늘의 러닝 지수, 실시간 페이스/케이던스/심박수 라이브 코칭 및 러닝 결과 분석 대시보드",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
