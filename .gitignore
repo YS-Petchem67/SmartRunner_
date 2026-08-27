@@ -6,3 +6,7 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Temporary fix scripts
+fix_*.js
+fix_*.mjs

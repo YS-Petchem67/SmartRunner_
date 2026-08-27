@@ -7,6 +7,7 @@ import { LiveAnalysisView } from './components/LiveAnalysisView';
 import { WorkoutSummaryView } from './components/WorkoutSummaryView';
 import { StatsHistoryView } from './components/StatsHistoryView';
 import { ProfileView } from './components/ProfileView';
+import { RecentRunDetailView } from './components/RecentRunDetailView';
 import { WeatherSimulationModal } from './components/WeatherSimulationModal';
 import { ShareModal } from './components/ShareModal';
 import {

@@ -1,11 +1,13 @@
 import React from 'react';
 import { WeatherConditions, RunningRecommendation, UserProfile } from '../types';
-import { getRunningIndexMeta } from '../utils/runningCalculator';
+import { formatPace, getRunningIndexMeta } from '../utils/runningCalculator';
 
 interface DashboardViewProps {
   weather: WeatherConditions;
   recommendation: RunningRecommendation;
   userProfile: UserProfile;
+  targetPaceSec: number;
+  onSetTargetPace: (paceSec: number) => void;
   onStartRun: () => void;
   onOpenWeatherModal: () => void;
   onSelectPreset: (preset: Partial<WeatherConditions>) => void;
@@ -15,6 +17,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   weather,
   recommendation,
   userProfile,
+  targetPaceSec,
+  onSetTargetPace,
   onStartRun,
   onOpenWeatherModal,
   onSelectPreset,
@@ -78,6 +82,55 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </button>
         </div>
       </header>
+
+      <section className="bg-[#1e2020] border border-white/10 rounded-xl p-4 shadow-lg">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#caf300] text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+                settings
+              </span>
+              <h2 className="font-mono text-xs font-bold text-[#c5c9ac] uppercase tracking-wider">
+                페이스 설정
+              </h2>
+            </div>
+            <span className="font-mono text-sm font-bold text-[#caf300]">{formatPace(targetPaceSec)}</span>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 text-xs font-mono">
+            {[270, 300, 330, 360, 390, 420].map((paceSec) => (
+              <button
+                key={paceSec}
+                type="button"
+                onClick={() => onSetTargetPace(paceSec)}
+                className={`py-2 rounded-lg border transition-all ${
+                  targetPaceSec === paceSec
+                    ? 'bg-[#caf300] text-[#171e00] border-[#caf300] font-bold'
+                    : 'bg-[#282a2b] text-[#c5c9ac] border-white/10 hover:border-white/20'
+                }`}
+              >
+                {formatPace(paceSec)}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <div className="flex justify-between text-[11px] font-mono text-[#c5c9ac]">
+              <span>맞춤 속도</span>
+              <span className="text-[#caf300] font-bold">{formatPace(targetPaceSec)}/km</span>
+            </div>
+            <input
+              type="range"
+              min={240}
+              max={420}
+              step={5}
+              value={targetPaceSec}
+              onChange={(e) => onSetTargetPace(Number(e.target.value))}
+              className="accent-[#caf300] w-full cursor-pointer h-2 bg-[#333535] rounded-lg"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Bento Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">

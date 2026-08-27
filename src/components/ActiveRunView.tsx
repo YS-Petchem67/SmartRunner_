@@ -6,6 +6,7 @@ import { formatTime } from '../utils/runningCalculator';
 interface ActiveRunViewProps {
   metrics: LiveRunMetrics;
   recommendation: RunningRecommendation;
+  targetPaceSec: number;
   weather: WeatherConditions;
   onPauseToggle: () => void;
   onFinishRun: () => void;
@@ -15,6 +16,7 @@ interface ActiveRunViewProps {
 export const ActiveRunView: React.FC<ActiveRunViewProps> = ({
   metrics,
   recommendation,
+  targetPaceSec,
   weather,
   onPauseToggle,
   onFinishRun,
@@ -56,6 +58,46 @@ export const ActiveRunView: React.FC<ActiveRunViewProps> = ({
         </div>
       </header>
 
+      {/* Real-time Alert Notification */}
+      {metrics.currentAlert && (
+        <div className={`mx-5 mt-4 rounded-2xl border-2 p-4 animate-pulse transition-all ${
+          metrics.currentAlert.type === 'warning'
+            ? 'bg-red-900/20 border-red-600/50 shadow-[0_0_20px_rgba(220,38,38,0.3)]'
+            : metrics.currentAlert.type === 'info'
+            ? 'bg-blue-900/20 border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
+            : 'bg-amber-900/20 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.3)]'
+        }`}>
+          <div className="flex items-start gap-3">
+            <span
+              className={`material-symbols-outlined text-2xl flex-shrink-0 ${
+                metrics.currentAlert.type === 'warning'
+                  ? 'text-red-500'
+                  : metrics.currentAlert.type === 'info'
+                  ? 'text-blue-400'
+                  : 'text-amber-400'
+              }`}
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              {metrics.currentAlert.type === 'warning' ? 'warning' : metrics.currentAlert.type === 'info' ? 'info' : 'lightbulb'}
+            </span>
+            <div className="flex-1">
+              <h3 className={`font-mono text-xs font-bold uppercase tracking-widest mb-1 ${
+                metrics.currentAlert.type === 'warning'
+                  ? 'text-red-400'
+                  : metrics.currentAlert.type === 'info'
+                  ? 'text-blue-300'
+                  : 'text-amber-300'
+              }`}>
+                {metrics.currentAlert.title}
+              </h3>
+              <p className="text-sm text-[#e2e2e2] leading-relaxed">
+                {metrics.currentAlert.message}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Dashboard Canvas */}
       <main className="flex-1 px-5 flex flex-col gap-4 max-w-xl mx-auto w-full overflow-y-auto">
         {/* Hero Metric: Current Pace */}
@@ -80,10 +122,10 @@ export const ActiveRunView: React.FC<ActiveRunViewProps> = ({
             </span>
             <div className="flex flex-col">
               <span className="font-mono text-[10px] leading-tight text-[#c5c9ac] uppercase font-bold">
-                목표 페이스 (날씨 보정)
+                목표 페이스
               </span>
               <span className="font-mono text-base font-bold text-white">
-                {recommendation.recommendedPaceFormatted}/km
+                {targetPaceSec ? `${Math.floor(targetPaceSec / 60)}'${(targetPaceSec % 60).toString().padStart(2, '0')}"` : recommendation.recommendedPaceFormatted}/km
               </span>
             </div>
           </div>

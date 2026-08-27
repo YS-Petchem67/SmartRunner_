@@ -4,11 +4,13 @@ import { CompletedRunSummary } from '../types';
 interface StatsHistoryViewProps {
   history: CompletedRunSummary[];
   onSelectRun: (run: CompletedRunSummary) => void;
+  onViewDetail?: (run: CompletedRunSummary) => void;
 }
 
 export const StatsHistoryView: React.FC<StatsHistoryViewProps> = ({
   history,
-  onSelectRun
+  onSelectRun,
+  onViewDetail
 }) => {
   const [filter, setFilter] = useState<'all' | '5k' | '10k'>('all');
 
@@ -188,7 +190,7 @@ export const StatsHistoryView: React.FC<StatsHistoryViewProps> = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between md:justify-end gap-6 pt-2 md:pt-0 border-t md:border-t-0 border-white/5">
+              <div className="flex items-center justify-between md:justify-end gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-white/5">
                 <div className="flex flex-col md:items-end">
                   <span className="font-mono text-xs text-[#c5c9ac]">시간</span>
                   <span className="font-mono text-base font-bold text-white">
@@ -207,9 +209,17 @@ export const StatsHistoryView: React.FC<StatsHistoryViewProps> = ({
                     {run.avgHeartRate} bpm
                   </span>
                 </div>
-                <span className="material-symbols-outlined text-[#c5c9ac] group-hover:text-[#caf300] group-hover:translate-x-1 transition-all hidden md:block">
-                  chevron_right
-                </span>
+                {onViewDetail && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onViewDetail(run);
+                    }}
+                    className="bg-[#1e2020] hover:bg-[#282a2b] border border-white/10 hover:border-[#caf300]/40 text-[#caf300] px-3 py-1.5 rounded-lg font-mono text-xs font-bold uppercase transition-all active:scale-95"
+                  >
+                    상세 보기
+                  </button>
+                )}
               </div>
             </div>
           ))}

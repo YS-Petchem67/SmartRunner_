@@ -33,8 +33,13 @@ export const INITIAL_PROFILE: import('../types').UserProfile = {
   totalRuns: 64,
   shoesMileageKm: 184.2,
   shoesName: "Nike ZoomX Vaporfly 3",
+  goalPeriod: 'week',
   targetWeeklyKm: 30,
-  currentWeeklyKm: 21.5
+  targetMonthlyKm: 120,
+  targetYearlyKm: 1500,
+  currentWeeklyKm: 21.5,
+  currentMonthlyKm: 94.3,
+  currentYearlyKm: 428.5
 };
 
 export const SAMPLE_RUN_HISTORY: import('../types').CompletedRunSummary[] = [

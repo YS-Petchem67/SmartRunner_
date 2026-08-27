@@ -60,6 +60,8 @@ export interface CompletedRunSummary {
   routeMapUrl: string;
 }
 
+export type GoalPeriod = 'week' | 'month' | 'year';
+
 export interface UserProfile {
   name: string;
   greeting: string;
@@ -70,6 +72,11 @@ export interface UserProfile {
   totalRuns: number;
   shoesMileageKm: number;
   shoesName: string;
+  goalPeriod: GoalPeriod;
   targetWeeklyKm: number;
+  targetMonthlyKm: number;
+  targetYearlyKm: number;
   currentWeeklyKm: number;
+  currentMonthlyKm: number;
+  currentYearlyKm: number;
 }
