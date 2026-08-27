@@ -1,5 +1,6 @@
 import React from 'react';
 import { WeatherConditions, RunningRecommendation, UserProfile } from '../types';
+import { getRunningIndexMeta } from '../utils/runningCalculator';
 
 interface DashboardViewProps {
   weather: WeatherConditions;
@@ -20,13 +21,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 }) => {
   // Gauge angle calculation (0 to 180 degrees) based on indexScore (0 to 100)
   const gaugeDegrees = Math.round((recommendation.indexScore / 100) * 180);
+  const indexMeta = getRunningIndexMeta(recommendation.indexScore);
 
   return (
     <main className="flex-1 w-full max-w-4xl mx-auto px-5 py-6 flex flex-col gap-6 pb-32">
       {/* Header Greeting */}
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-2">
         <div>
-          <h1 className="font-headline text-2xl md:text-3xl font-bold text-white tracking-tight">
+          <h1 className="dashboard-greeting font-headline text-2xl md:text-3xl font-bold text-white tracking-tight">
             {userProfile.greeting}
           </h1>
           <p className="text-[#c5c9ac] text-base mt-1">
@@ -80,7 +82,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Bento Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
         {/* Today's Running Index (Main Gauge Card) */}
-        <div className="col-span-1 md:col-span-8 bg-[#2A2E35] border border-white/10 rounded-xl p-5 flex flex-col items-center relative overflow-hidden shadow-lg">
+        <div className="running-index-card col-span-1 md:col-span-8 bg-[#2A2E35] border border-white/10 rounded-xl p-5 flex flex-col items-center relative overflow-hidden shadow-lg">
           <div className="w-full flex justify-between items-center mb-6">
             <h2 className="font-mono text-xs font-bold text-[#c5c9ac] uppercase tracking-widest">
               오늘의 러닝지수
@@ -99,17 +101,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div
               className="absolute inset-0 rounded-t-full overflow-hidden"
               style={{
-                background: `conic-gradient(from 180deg at 50% 100%, #caf300 0deg, #caf300 ${gaugeDegrees}deg, rgba(255, 255, 255, 0.12) ${gaugeDegrees}deg, rgba(255, 255, 255, 0.12) 180deg)`,
+                background: `conic-gradient(from 180deg at 50% 100%, ${indexMeta.colorHex} 0deg, ${indexMeta.colorHex} ${gaugeDegrees}deg, rgba(255, 255, 255, 0.12) ${gaugeDegrees}deg, rgba(255, 255, 255, 0.12) 180deg)`,
                 transformOrigin: 'bottom center',
               }}
             ></div>
 
             {/* Inner Cutout */}
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-[#2A2E35] rounded-t-full border-t border-white/10 flex flex-col items-center justify-end pb-2">
-              <span className="font-mono text-4xl font-extrabold text-[#caf300] leading-none">
+            <div className="running-index-inner absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-[#2A2E35] rounded-t-full border-t border-white/10 flex flex-col items-center justify-end pb-2">
+              <span className={`font-mono text-4xl font-extrabold leading-none ${indexMeta.textClass}`}>
                 {recommendation.indexScore}
               </span>
-              <span className="font-mono text-xs font-bold text-[#c5c9ac] mt-1">
+              <span className={`font-mono text-xs font-bold mt-1 ${indexMeta.textClass}`}>
                 {recommendation.indexLabel}
               </span>
             </div>

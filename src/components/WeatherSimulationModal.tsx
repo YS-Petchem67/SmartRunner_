@@ -1,6 +1,6 @@
 import React from 'react';
 import { WeatherConditions } from '../types';
-import { calculateRunningIndex } from '../utils/runningCalculator';
+import { calculateRunningIndex, getRunningIndexMeta } from '../utils/runningCalculator';
 
 interface WeatherSimulationModalProps {
   isOpen: boolean;
@@ -18,6 +18,7 @@ export const WeatherSimulationModal: React.FC<WeatherSimulationModalProps> = ({
   if (!isOpen) return null;
 
   const preview = calculateRunningIndex(weather);
+  const previewMeta = getRunningIndexMeta(preview.indexScore);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
@@ -44,16 +45,16 @@ export const WeatherSimulationModal: React.FC<WeatherSimulationModalProps> = ({
         </div>
 
         {/* Real-time Preview Banner */}
-        <div className="bg-[#2A2E35] border border-[#caf300]/30 rounded-xl p-4 flex items-center justify-between shadow-inner">
+        <div className="bg-[#2A2E35] border border-white/20 rounded-xl p-4 flex items-center justify-between shadow-inner">
           <div>
             <span className="font-mono text-xs text-[#c5c9ac] uppercase">
               실시간 산출 러닝지수
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-3xl font-extrabold text-[#caf300]">
+              <span className={`font-mono text-3xl font-extrabold ${previewMeta.textClass}`}>
                 {preview.indexScore}점
               </span>
-              <span className="font-mono text-xs font-bold text-[#b0d500]">
+              <span className={`font-mono text-xs font-bold ${previewMeta.textClass}`}>
                 ({preview.indexLabel})
               </span>
             </div>

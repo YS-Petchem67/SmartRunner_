@@ -28,6 +28,11 @@ import {
 } from './utils/runningCalculator';
 
 export default function App() {
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const stored = window.localStorage.getItem('smart-runner-theme');
+    return stored === 'light' ? 'light' : 'dark';
+  });
+
   // Navigation & Screen states
   const [currentTab, setCurrentTab] = useState<'home' | 'stats' | 'profile'>('home');
   const [appMode, setAppMode] = useState<'dashboard' | 'active_run' | 'live_analysis' | 'workout_summary'>('dashboard');
@@ -122,6 +127,11 @@ export default function App() {
     };
   }, [appMode]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    window.localStorage.setItem('smart-runner-theme', theme);
+  }, [theme]);
+
   // Start run handler
   const handleStartRun = () => {
     setLiveMetrics({
@@ -198,7 +208,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121414] text-[#e2e2e2] flex flex-col font-sans relative selection:bg-[#caf300] selection:text-[#171e00]">
+    <div className={`theme-${theme} min-h-screen bg-[#121414] text-[#e2e2e2] flex flex-col font-sans relative selection:bg-[#caf300] selection:text-[#171e00]`}>
       {/* Top Header - Shown when in regular tab navigation */}
       {appMode === 'dashboard' && (
         <Header
@@ -239,6 +249,8 @@ export default function App() {
           onUpdateProfile={(updated) =>
             setUserProfile((prev) => ({ ...prev, ...updated }))
           }
+          theme={theme}
+          onToggleTheme={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
         />
       )}
 

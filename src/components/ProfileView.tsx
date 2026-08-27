@@ -5,11 +5,15 @@ import { UserProfile } from '../types';
 interface ProfileViewProps {
   userProfile: UserProfile;
   onUpdateProfile: (updated: Partial<UserProfile>) => void;
+  theme: 'dark' | 'light';
+  onToggleTheme: () => void;
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({
   userProfile,
-  onUpdateProfile
+  onUpdateProfile,
+  theme,
+  onToggleTheme
 }) => {
   const weeklyProgress = Math.min(
     100,
@@ -55,6 +59,16 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
               </span>
             </div>
             <div className="flex items-center gap-2 justify-center">
+              <button
+                onClick={onToggleTheme}
+                className="flex items-center justify-center w-9 h-9 bg-[#1e2020] hover:bg-[#282a2b] text-[#caf300] border border-white/10 hover:border-[#caf300]/40 rounded-full transition-all active:scale-95"
+                title={theme === 'dark' ? '다크모드 (달 아이콘)' : '라이트모드 (해 아이콘)'}
+                aria-label={theme === 'dark' ? '다크모드' : '라이트모드'}
+              >
+                <span className="material-symbols-outlined text-base">
+                  {theme === 'dark' ? 'dark_mode' : 'light_mode'}
+                </span>
+              </button>
               <span className="font-mono text-xs text-[#c5c9ac]">VO2 Max:</span>
               <span className="font-mono text-xl font-extrabold text-[#caf300]">
                 {userProfile.vo2max}

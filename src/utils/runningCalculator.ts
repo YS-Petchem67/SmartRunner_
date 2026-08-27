@@ -1,5 +1,57 @@
 import { WeatherConditions, RunningRecommendation } from '../types';
 
+type RunningIndexMeta = {
+  label: string;
+  intensity: string;
+  textClass: string;
+  colorHex: string;
+};
+
+export function getRunningIndexMeta(score: number): RunningIndexMeta {
+  if (score >= 85) {
+    return {
+      label: '매우좋음',
+      intensity: '고강도 훈련을 하기에 최적의 조건입니다.',
+      textClass: 'text-emerald-300',
+      colorHex: '#6ee7b7'
+    };
+  }
+
+  if (score >= 70) {
+    return {
+      label: '좋음',
+      intensity: '중강도 템포 런 또는 지속주에 적합합니다.',
+      textClass: 'text-[#caf300]',
+      colorHex: '#caf300'
+    };
+  }
+
+  if (score >= 50) {
+    return {
+      label: '보통',
+      intensity: '회복을 위한 가벼운 조깅(LSD)을 권장합니다.',
+      textClass: 'text-amber-300',
+      colorHex: '#fcd34d'
+    };
+  }
+
+  if (score >= 35) {
+    return {
+      label: '나쁨',
+      intensity: '기상 조건이 좋지 않아 운동 강도를 낮추는 것을 권장합니다.',
+      textClass: 'text-orange-400',
+      colorHex: '#fb923c'
+    };
+  }
+
+  return {
+    label: '매우 나쁨',
+    intensity: '기상 악화 또는 미세먼지로 인해 실내 트레드밀을 추천합니다.',
+    textClass: 'text-red-400',
+    colorHex: '#f87171'
+  };
+}
+
 export function formatTime(totalSeconds: number): string {
   const mins = Math.floor(totalSeconds / 60);
   const secs = Math.floor(totalSeconds % 60);
@@ -42,8 +94,8 @@ export function calculateRunningIndex(weather: WeatherConditions): RunningRecomm
     score -= 25;
   }
 
-  // Clamp score between 20 and 99
-  const finalScore = Math.max(20, Math.min(99, Math.round(score)));
+  // Clamp score between 0 and 100
+  const finalScore = Math.max(0, Math.min(100, Math.round(score)));
 
   // Pace adjustments
   let basePaceSec = 320; // 5'20"
@@ -64,30 +116,16 @@ export function calculateRunningIndex(weather: WeatherConditions): RunningRecomm
   const recommendedPaceSec = basePaceSec + paceAdjustmentSec;
   const recommendedPaceFormatted = formatPace(recommendedPaceSec);
 
-  let indexLabel = '매우 좋음';
-  let intensity = '고강도 훈련을 하기에 최적의 조건입니다.';
-  if (finalScore >= 80) {
-    indexLabel = '매우 좋음';
-    intensity = '고강도 훈련을 하기에 최적의 조건입니다.';
-  } else if (finalScore >= 65) {
-    indexLabel = '좋음';
-    intensity = '중강도 템포 런 또는 지속주에 적합합니다.';
-  } else if (finalScore >= 50) {
-    indexLabel = '보통';
-    intensity = '회복을 위한 가벼운 조깅(LSD)을 권장합니다.';
-  } else {
-    indexLabel = '주의';
-    intensity = '기상 악화 또는 미세먼지로 인해 실내 트레드밀을 추천합니다.';
-  }
+  const indexMeta = getRunningIndexMeta(finalScore);
 
   return {
     indexScore: finalScore,
-    indexLabel,
+    indexLabel: indexMeta.label,
     recommendedPaceSec,
     recommendedPaceFormatted,
     targetHeartRate: 145,
     estimatedDuration: "45:00",
     adjustmentReason: reason,
-    intensityRecommendation: intensity
+    intensityRecommendation: indexMeta.intensity
   };
 }
